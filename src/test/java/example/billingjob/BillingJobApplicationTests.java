@@ -1,5 +1,8 @@
 package example.billingjob;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,17 +52,24 @@ class BillingJobApplicationTests {
 		// 		.addString("input.file", "/some/input/file")
 		// 		.toJobParameters();
 
-		JobParameters jobParameters = this.jobLauncherTestUtils
-				.getUniqueJobParametersBuilder()
-				.addString("input.file", "/some/input/file")
+		// JobParameters jobParameters = this.jobLauncherTestUtils
+		// 		.getUniqueJobParametersBuilder()
+		// 		.addString("input.file", "/some/input/file")
+		// 		.toJobParameters();
+
+		JobParameters jobParameters = new JobParametersBuilder()
+				.addString("input.file", "src/main/resources/billing-2023-01.csv")
 				.toJobParameters();
 
 		// when
 		// JobExecution jobExecution = this.jobLauncher.run(this.job, jobParameters);
 		JobExecution jobExecution = this.jobLauncherTestUtils.launchJob(jobParameters);
 		// then
-		Assertions.assertTrue(output.getOut().contains("processing billing information from file /some/input/file"));
+		// Assertions.assertTrue(output.getOut().contains("processing billing information from file /some/input/file"));
+		// Assertions.assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
+
 		Assertions.assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
+		Assertions.assertTrue(Files.exists(Paths.get("staging", "billing-2023-01.csv")));
 	}
 
 }
